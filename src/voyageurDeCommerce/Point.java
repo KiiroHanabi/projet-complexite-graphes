@@ -14,7 +14,7 @@ public class Point {
 	
 	public float distance(Point p)
 	{
-		return 0;
+		return (Math.sqrt((p.getY()-y)*(p.getY()-y)+(p.getX()-x)*(p.getX()-x)));
 	}
 
 }
