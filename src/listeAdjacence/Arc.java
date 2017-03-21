@@ -2,8 +2,14 @@ package listeAdjacence;
 
 public class Arc {
 
-	private Noeud init;
-	private Noeud term;
+	/**
+	 * Noeud intitial et noeud terminal.
+	 */
+	private Noeud init, term;
+	
+	/**
+	 *  Poids de l'arc.
+	 */
 	private float poids;
 
 
