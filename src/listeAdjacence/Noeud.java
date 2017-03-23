@@ -26,7 +26,7 @@ public class Noeud {
 	 * @param poids : Poids de l'arc.
 	 * @return <strong>false</strong> si il y a déjà un arc, <strong>true</strong> si l'ajout s'est bien passé.
 	 */
-	public boolean ajouterArc(Noeud suc, float poids)
+	public boolean ajouterArc(Noeud suc, double poids)
 	{
 		for(int i = 0; i < arcs.size(); i++)
 		{
@@ -34,8 +34,27 @@ public class Noeud {
 				return false;
 		}
 		arcs.add(new Arc(this,suc,poids));
-		System.out.println(arcs.get(arcs.size()-1).getPoids());
 		return true;
+	}
+	
+	/**
+	 * Ajoute un nouvel arc vers un noeud successeur, en vérifiant qu'il n'y en a pas déjà un.
+	 * @param arc : L'arc à ajouter.
+	 * @return <strong>false</strong> si il y a déjà un arc, <strong>true</strong> si l'ajout s'est bien passé.
+	 */
+	public boolean ajouterArc(Arc arc)
+	{
+		if(arc.getInit().getId() != this.id)
+			return false;
+		
+		for(int i = 0; i < arcs.size(); i++)
+		{
+			if (arcs.get(i).getTerm().getId() ==  arc.getTerm().getId())
+				return false;
+		}
+		arcs.add(arc);
+		return true;
+		
 	}
 
 	/**

@@ -13,7 +13,7 @@ public class Graphe {
 	/**
 	 * Map contenant les noeuds, stockés par identifiant.
 	 */
-	HashMap<Integer, Noeud> noeuds;
+	private HashMap<Integer, Noeud> noeuds;
 
 	public Graphe() {
 		noeuds = new HashMap<Integer, Noeud>();
@@ -21,7 +21,9 @@ public class Graphe {
 
 	/**
 	 * Importe un graphe depuis un ficher CSV.
-	 * @param filepath : Le chemin du fichier à importer
+	 * 
+	 * @param filepath
+	 *            : Le chemin du fichier à importer
 	 */
 	public Graphe(String filepath) {
 		noeuds = new HashMap<Integer, Noeud>();
@@ -31,9 +33,13 @@ public class Graphe {
 			in = new FileReader(filepath);
 			records = CSVFormat.RFC4180.parse(in);
 			for (CSVRecord record : records)
+			{
+				System.out.println(Integer.valueOf(record.get(0))+" --"+Double.valueOf(record.get(2))+
+				"--> "+Integer.valueOf(record.get(1)));
 				ajouterArc(new Noeud(Integer.valueOf(record.get(0))),
 						new Noeud(Integer.valueOf(record.get(1))),
-						Float.valueOf(record.get(2)));
+						Double.valueOf(record.get(2)));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -73,18 +79,18 @@ public class Graphe {
 	 *         successeur du noeud initial, <strong>true</strong> si l'ajout de
 	 *         l'arc s'est bien passé.
 	 */
-	public boolean ajouterArc(Noeud n1, Noeud n2, float poids) {
+	public boolean ajouterArc(Noeud n1, Noeud n2, double poids) {
 		if (n1.successeurs().contains(n2))
+		{
 			return false;
+		}
 		if (!noeuds.containsKey(n1.getId()))
 		{
 			ajouterNoeud(n1);
-			
 		}
 		if (!noeuds.containsKey(n2.getId()))
 		{
 			ajouterNoeud(n2);
-			System.out.println("meh");
 		}
 		n1.ajouterArc(n2, poids);
 		return true;
@@ -94,17 +100,22 @@ public class Graphe {
 	 * Affiche le graphe noeud par noeud selon l'affichage suivant :
 	 * <strong></br>Noeud 2 : </br>2 --1.2--> 3</strong>
 	 */
-	public void afficher() {
+	public String toString() {
 		Noeud[] list = noeuds.values().toArray(new Noeud[0]);
+		String res = "";
 		for (int i = 0; i < list.length; i++) {
-			System.out.println("Noeud " + list[i].getId() + " :");
+			res += "Noeud " + list[i].getId() + " :\n";
 			for (int j = 0; j < list[i].successeurs().size(); j++) {
-				System.out.println("\t"+ list[i].getId()+ " --"
-						+ list[i].getArcByTerm(list[i].successeurs().get(j))
-								.getPoids() + "--> "
-						+ list[i].successeurs().get(j).getId());
+				res += "\t" + list[i].getId() + " --" + list[i].getArcByTerm(list[i].successeurs().get(j)).getPoids() + "--> " + list[i].successeurs().get(j).getId();
+				if (i < list.length - 1 || j < list[i].successeurs().size()-1)
+					res += "\n";
 			}
 		}
+		return res;
 	}
-	
+
+	public HashMap<Integer, Noeud> getNoeuds() {
+		return noeuds;
+	}
+
 }
