@@ -34,8 +34,6 @@ public class Graphe {
 			records = CSVFormat.RFC4180.parse(in);
 			for (CSVRecord record : records)
 			{
-				System.out.println(Integer.valueOf(record.get(0))+" --"+Double.valueOf(record.get(2))+
-				"--> "+Integer.valueOf(record.get(1)));
 				ajouterArc(new Noeud(Integer.valueOf(record.get(0))),
 						new Noeud(Integer.valueOf(record.get(1))),
 						Double.valueOf(record.get(2)));
@@ -92,7 +90,7 @@ public class Graphe {
 		{
 			ajouterNoeud(n2);
 		}
-		n1.ajouterArc(n2, poids);
+		noeuds.get(n1.getId()).ajouterArc(noeuds.get(n2.getId()), poids);
 		return true;
 	}
 

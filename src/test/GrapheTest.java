@@ -1,6 +1,9 @@
 package test;
 
 import static org.junit.Assert.*;
+
+import java.util.HashMap;
+
 import listeAdjacence.Arc;
 import listeAdjacence.Graphe;
 import listeAdjacence.Noeud;
@@ -37,8 +40,8 @@ public class GrapheTest {
 	public void testAjouterNoeud() {
 		g.ajouterNoeud(n1);
 		g.ajouterNoeud(n2);
-		assertSame(n1, g.getNoeuds().get(1));
-		assertSame(n2, g.getNoeuds().get(2));
+		assertTrue(g.getNoeuds().get(1).equals(n1));
+		assertTrue(g.getNoeuds().get(2).equals(n2));
 		assertFalse(g.ajouterNoeud(n1));
 	}
 	
@@ -48,9 +51,6 @@ public class GrapheTest {
 		g.ajouterArc(n1, n2, 2.5);
 		Arc arc = new Arc(n1, n2, 2.5);
 		assertTrue(n1.getArcs().get(0).equals(arc));
-		assertTrue(n1.getArcs().get(0).getInit() == arc.getInit());
-		assertTrue(n1.getArcs().get(0).getTerm() == arc.getTerm());
-		assertTrue(n1.getArcs().get(0).getPoids() == arc.getPoids());
 		assertFalse(g.ajouterArc(n1,n2,1.5));
 	}
 	
