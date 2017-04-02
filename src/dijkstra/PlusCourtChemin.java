@@ -6,7 +6,23 @@ public class PlusCourtChemin {
 	
 	private double coutPPC;
 	private Noeud perePPC;
-	private boolean pereMarque;
+	private boolean marque;
+	
+	public void afficherChemin()
+	{
+		System.out.print("<--"+coutPPC+"-- "+perePPC.getId()+" ");
+		afficherChemin(perePPC);
+	}
+	
+	public void afficherChemin(Noeud pere)
+	{
+		if(pere.equals(perePPC)){
+			System.out.println();
+			return;
+		}
+		System.out.print("--"+coutPPC+"--> "+perePPC.getId()+" ");
+		afficherChemin(perePPC);
+	}
 	
 	public double getCoutPPC() {
 		return coutPPC;
@@ -24,11 +40,11 @@ public class PlusCourtChemin {
 		this.perePPC = perePPC;
 	}
 	
-	public boolean isPereMarque() {
-		return pereMarque;
+	public boolean isMarque() {
+		return marque;
 	}
 	
-	public void setPereMarque(boolean pereMarque) {
-		this.pereMarque = pereMarque;
+	public void setMarque(boolean marque) {
+		this.marque = marque;
 	}
 }
