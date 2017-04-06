@@ -195,6 +195,10 @@ public class DijkstraV1 {
 	public HashMap<Integer,Noeud> getM() {
 		return M;
 	}
+	
+	public HashMap<Integer,Noeud> getF() {
+		return F;
+	}
 
 	public int getS() {
 		return s;

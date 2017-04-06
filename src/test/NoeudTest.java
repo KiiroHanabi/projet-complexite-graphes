@@ -16,24 +16,24 @@ public class NoeudTest {
 
 	private Arc arc;
 	private Noeud init, suc2, suc3;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		init = new Noeud(1);
 		suc2 = new Noeud(2);
 		suc3 = new Noeud(3);
-		arc = new Arc(init,suc2,1.5);
+		arc = new Arc(init, suc2, 1.5);
 	}
 
 	@Test
 	public void testAjouterArc() {
 		init.ajouterArc(suc2, 1.5);
 		LinkedList<Arc> arcs = new LinkedList<Arc>();
-		arcs.add(new Arc(init,suc2,1.5));
-		assertTrue(init.getArcs().get(0).equals(new Arc(init,suc2,1.5)));
+		arcs.add(new Arc(init, suc2, 1.5));
+		assertTrue(init.getArcs().get(0).equals(new Arc(init, suc2, 1.5)));
 		assertFalse(init.ajouterArc(suc2, 2.5));
 	}
-	
+
 	@Test
 	public void testAjouterArc2() {
 		init.ajouterArc(arc);
@@ -42,10 +42,9 @@ public class NoeudTest {
 		assertTrue(init.getArcs().get(0).equals(arc));
 		assertFalse(init.ajouterArc(arc));
 	}
-	
+
 	@Test
-	public void testSuccesseurs()
-	{
+	public void testSuccesseurs() {
 		init.ajouterArc(arc);
 		init.ajouterArc(suc3, 2.5);
 		suc2.ajouterArc(init, 1);
@@ -53,17 +52,16 @@ public class NoeudTest {
 		list.add(suc2);
 		list.add(suc3);
 		list.add(init);
-		assertSame(init.successeurs().get(0),list.get(0));
-		assertSame(init.successeurs().get(1),list.get(1));
-		assertSame(suc2.successeurs().get(0),list.get(2));
+		assertSame(init.successeurs().get(0), list.get(0));
+		assertSame(init.successeurs().get(1), list.get(1));
+		assertSame(suc2.successeurs().get(0), list.get(2));
 		assertTrue(list.size() == 3);
 	}
-	
+
 	@Test
-	public void testGetArcByTerm()
-	{
+	public void testGetArcByTerm() {
 		init.ajouterArc(arc);
-		assertSame(arc,init.getArcByTerm(suc2));
+		assertSame(arc, init.getArcByTerm(suc2));
 	}
 
 }

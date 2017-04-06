@@ -127,7 +127,8 @@ public class Graphe {
 	 */
 	public void randomizeGraphe(int n, int p) {
 		noeuds.clear();
-		if(p > n*(n-1)) p = n*(n-1); // autorise le nombre maximal d'arcs (n*n-1)
+		if (p > n * (n - 1))
+			p = n * (n - 1); // autorise le nombre maximal d'arcs (n*n-1)
 		for(int i = 1; i <= n; i++)
 			ajouterNoeud(new Noeud(i));
 		for(int j = 0; j < p; j++)
