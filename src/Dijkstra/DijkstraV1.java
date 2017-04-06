@@ -1,6 +1,7 @@
 package dijkstra;
 
-import java.util.ArrayList;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -20,13 +21,23 @@ public class DijkstraV1 {
 	/**
 	 * Liste des noeuds non marqués.
 	 */
-	private ArrayList<Noeud> M;
+	private HashMap<Integer,Noeud> M;
+	
+	/**
+	 * Liste des noeuds marqués.
+	 */
+	private HashMap<Integer,Noeud> F;
 	
 	/**
 	 * Identifiant du noeud source.
 	 */
 	private int s;
 	
+	/**
+	 * 
+	 * @param graphe Le graphe à analyser.
+	 * @param source L'identifiant du noeud source de l'algorithme.
+	 */
 	public DijkstraV1(Graphe graphe, int source){
 		
 		if(graphe == null)
@@ -37,12 +48,13 @@ public class DijkstraV1 {
 		{
 			g = graphe;
 			ppc = new HashMap<Integer, PlusCourtChemin>();
-			Noeud[] noeuds = g.getNoeuds().values().toArray(new Noeud[0]);
+			Noeud[] noeuds = Graphe.mapToArray(g.getNoeuds());
 			for(int i = 0; i < noeuds.length; i++)
 			{
 				ppc.put(noeuds[i].getId(), new PlusCourtChemin());
 			}
-			M = new ArrayList<Noeud>();
+			M = new HashMap<Integer,Noeud>();
+			F = new HashMap<Integer,Noeud>();
 			s = source;
 		}
 		else 
@@ -51,6 +63,10 @@ public class DijkstraV1 {
 		}
 	}
 	
+	/** Démarre le calcul de l'algorithme.
+	 * 
+	 * @throws Exception Lance une exception si la construction de la classe s'est mal passée.
+	 */
 	public void start() throws Exception
 	{
 		if(g == null || ppc == null || M == null)
@@ -58,46 +74,67 @@ public class DijkstraV1 {
 			System.err.println("Le graphe inséré ou le noeud source ont causé une erreur, veuillez vérifier le code.");
 			throw(new NullPointerException());
 		}
+		Instant i = Instant.now();
 		init();
 		loop();
+		Instant i2 = Instant.now();
+		Duration d = Duration.between(i, i2);
+		System.out.println(d.toMillis());
 	}
 	
+	/** Phase d'initialisation de l'algorithme, remplit la liste des noeuds non marqués en calculant leur coût et noeud père initiaux.
+	 * 
+	 */
 	public void init()
 	{
 		for(int i=1; i < g.getNoeuds().size()+1; i++){
 			ppc.get(i).setPerePPC(g.getNoeuds().get(s));
 			ppc.get(i).setCoutPPC(cout(s,g.getNoeuds().get(i).getId()));
-			M.add(g.getNoeuds().get(i));
+			M.put(g.getNoeuds().get(i).getId(),g.getNoeuds().get(i));
 		}
-		M.remove(g.getNoeuds().get(s));
+		F.put(g.getNoeuds().get(s).getId(),g.getNoeuds().get(s));
+		M.remove(g.getNoeuds().get(s).getId());
 	}
 	
+	/** Phase itérative de l'algorithme, vérifie de le cout des successeurs et met les valeurs à jour si elles sont améliorables. Après cette phase l'algorithme est terminé.
+	 * 
+	 */
 	public void loop()
 	{
 		while(!M.isEmpty())
 		{
+//			for(int v = 1; v <= ppc.size(); v++)
+//				System.out.print(v+" : "+ppc.get(v).getCoutPPC()+"|"+ppc.get(v).getPerePPC().getId()+";\t");
+//			System.out.println();
+//			Permet de montrer les itérations
 			int m = selecDmin();
-			System.out.println(ppc.get(M.get(m).getId()).getCoutPPC());
 			if(ppc.get(M.get(m).getId()).getCoutPPC() == Double.POSITIVE_INFINITY)
 			{
 				break;
 			}
+			F.put(M.get(m).getId(),M.get(m));
 			M.remove(m);
-			LinkedList<Noeud> successeurs = g.getNoeuds().get(M.get(m).getId()).successeurs();
+			LinkedList<Noeud> successeurs = g.getNoeuds().get(F.get(m).getId()).successeurs();
 			for (int y = 0; y < successeurs.size(); y++)
-			{
-				if(M.contains(successeurs.get(y)))
+			{	
+				if(M.containsValue(successeurs.get(y)))
 				{
-					if(ppc.get(M.get(m).getId()).getCoutPPC()+cout(M.get(m).getId(),successeurs.get(y).getId()) < ppc.get(successeurs.get(y).getId()).getCoutPPC())
+					if(ppc.get(F.get(m).getId()).getCoutPPC()+cout(F.get(m).getId(),successeurs.get(y).getId()) <= ppc.get(successeurs.get(y).getId()).getCoutPPC())
 					{
-						ppc.get(successeurs.get(y).getId()).setCoutPPC(ppc.get(M.get(m).getId()).getCoutPPC()+cout(M.get(m).getId(),successeurs.get(y).getId()));
-						ppc.get(successeurs.get(y).getId()).setPerePPC(g.getNoeuds().get(M.get(m).getId()));
+						ppc.get(successeurs.get(y).getId()).setCoutPPC(ppc.get(F.get(m).getId()).getCoutPPC()+cout(F.get(m).getId(),successeurs.get(y).getId()));
+						ppc.get(successeurs.get(y).getId()).setPerePPC(g.getNoeuds().get(F.get(m).getId()));
 					}
 				}
 			}
 		}
 	}
 	
+	/** Calcule le coût entre deux noeuds du graphe.
+	 * 
+	 * @param source Le noeud de départ.
+	 * @param fin Le noeud de fin.
+	 * @return Le coût de l'arc situé entre les deux noeuds s'il y en a un, sinon renvoie la valeur <strong>Double.POSITIVE_INFINITY</strong>.
+	 */
 	public double cout(int source, int fin)
 	{
 		if(source == fin) return 0;
@@ -106,31 +143,56 @@ public class DijkstraV1 {
 		else return arc.getPoids();
 	}
 	
+	/** Détermine le noeud non marqué dont le coût est le plus petit depuis la source.
+	 * 
+	 * @return L'identifiant du noeud au coût minimal.
+	 */
 	public int selecDmin()
 	{
 		int min = 0;
-		for(int i = 0; i < M.size(); i++)
+		Noeud[] arrayM = Graphe.mapToArray(M);
+		for(int i = 0; i < arrayM.length; i++)
 		{
-			if(ppc.get(M.get(i).getId()).getCoutPPC() < ppc.get(M.get(min).getId()).getCoutPPC())
+			if(ppc.get(arrayM[i].getId()).getCoutPPC() < ppc.get(arrayM[min].getId()).getCoutPPC())
 				min = i;
 		}
-		return min;
+		return arrayM[min].getId();
 	}
 
-	public PlusCourtChemin getPlusCourtChemin(int destination) {
-		if(ppc.containsKey(destination))
-				return ppc.get(destination);
+	/** Vérifie que le noeud demandé existe dans le graphe et appelle <i>afficherChemin()</i> pour l'afficher.
+	 * 
+	 * @param destination L'identifiant du noeud dont on veut connaître le plus court chemin depuis la source.
+	 */
+	public void afficherPlusCourtChemin(int destination) {
+		if(ppc.containsKey(destination)){
+				System.out.print("Cout : "+ppc.get(destination).getCoutPPC()+", Chemin : "+destination+" ");
+				afficherChemin(ppc.get(destination));
+		}
 		else {
 			System.err.println("Le noeud destination n'est pas présent dans le graphe.");
-			return null;
 		}
+	}
+	
+	/** Remonte le chemin depuis le noeud choisi vers la source en l'affichant dans la console.
+	 * 
+	 * @param ch Le <strong>PlusCourtChemin</strong> à remonter.
+	 */
+	public void afficherChemin(PlusCourtChemin ch)
+	{
+		if(ch.getPerePPC().equals(g.getNoeuds().get(s))){
+			System.out.print("--> "+s);
+			System.out.println();
+			return;
+		}
+		System.out.print("--> "+ch.getPerePPC().getId()+" ");
+		afficherChemin(ppc.get(ch.getPerePPC().getId()));
 	}
 
 	public Graphe getG() {
 		return g;
 	}
 
-	public ArrayList<Noeud> getM() {
+	public HashMap<Integer,Noeud> getM() {
 		return M;
 	}
 

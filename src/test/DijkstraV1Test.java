@@ -37,9 +37,9 @@ public class DijkstraV1Test {
 			assertEquals(g.getNoeuds().get(d.getS()), d.getPpc().get(i).getPerePPC());
 			assertTrue(d.cout(d.getS(),g.getNoeuds().get(i).getId()) == d.getPpc().get(i).getCoutPPC());
 			if(i != d.getS())
-				assertTrue(d.getM().contains(g.getNoeuds().get(i)));
+				assertTrue(d.getM().containsValue(g.getNoeuds().get(i)));
 		}
-		assertFalse(d.getM().contains(g.getNoeuds().get(d.getS())));
+		assertFalse(d.getM().containsValue(g.getNoeuds().get(d.getS())));
 	}
 	
 	@Test(timeout = 5000)
@@ -80,18 +80,6 @@ public class DijkstraV1Test {
 		assertTrue(Double.POSITIVE_INFINITY == d.cout(5,3));
 	}
 	
-	@Test
-	public void testGetPlusCourtChemin()
-	{
-		try {
-			d.start();
-			assertNull(d.getPlusCourtChemin(10));
-			assertNotNull(d.getPlusCourtChemin(2));
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
 	
 	@Test
 	public void testStart()

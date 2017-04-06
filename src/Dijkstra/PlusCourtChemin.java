@@ -4,25 +4,17 @@ import listeAdjacence.Noeud;
 
 public class PlusCourtChemin {
 	
+	/** 
+	 * Le cout entre la source et le noeud.
+	 */
 	private double coutPPC;
+	
+	/**
+	 * Le père du noeud.
+	 */
 	private Noeud perePPC;
-	private boolean marque;
 	
-	public void afficherChemin()
-	{
-		System.out.print("<--"+coutPPC+"-- "+perePPC.getId()+" ");
-		afficherChemin(perePPC);
-	}
-	
-	public void afficherChemin(Noeud pere)
-	{
-		if(pere.equals(perePPC)){
-			System.out.println();
-			return;
-		}
-		System.out.print("--"+coutPPC+"--> "+perePPC.getId()+" ");
-		afficherChemin(perePPC);
-	}
+	public PlusCourtChemin(){}
 	
 	public double getCoutPPC() {
 		return coutPPC;
@@ -38,13 +30,5 @@ public class PlusCourtChemin {
 	
 	public void setPerePPC(Noeud perePPC) {
 		this.perePPC = perePPC;
-	}
-	
-	public boolean isMarque() {
-		return marque;
-	}
-	
-	public void setMarque(boolean marque) {
-		this.marque = marque;
 	}
 }

@@ -99,7 +99,7 @@ public class Graphe {
 	 * <strong></br>Noeud 2 : </br>2 --1.2--> 3</strong>
 	 */
 	public String toString() {
-		Noeud[] list = noeuds.values().toArray(new Noeud[0]);
+		Noeud[] list = mapToArray(noeuds);
 		String res = "";
 		for (int i = 0; i < list.length; i++) {
 			res += "Noeud " + list[i].getId() + " :\n";
@@ -114,6 +114,33 @@ public class Graphe {
 
 	public HashMap<Integer, Noeud> getNoeuds() {
 		return noeuds;
+	}
+	
+	public static Noeud[] mapToArray(HashMap<Integer,Noeud> map) {
+		return map.values().toArray(new Noeud[0]);
+	}
+	
+	/** Vide puis remplit le graphe de manière aléatoire.
+	 * 
+	 * @param n Le nombre de noeuds du graphe.
+	 * @param p Le nombre d'arcs valués qui relient les noeuds.
+	 */
+	public void randomizeGraphe(int n, int p) {
+		noeuds.clear();
+		if(p > n*(n-1)) p = n*(n-1); // autorise le nombre maximal d'arcs (n*n-1)
+		for(int i = 1; i <= n; i++)
+			ajouterNoeud(new Noeud(i));
+		for(int j = 0; j < p; j++)
+		{
+			int init = (int)(Math.random()*n)+1;
+			int term = (int)(Math.random()*n)+1;
+			while (term == init)
+				term = (int)(Math.random()*n)+1;
+			double poids = Math.random()*10;
+			poids = (double)((int)(poids*100))/100;
+			if(!ajouterArc(noeuds.get(init), noeuds.get(term), poids)) // assure que tous les arcs sont créés
+				j--;
+		}
 	}
 
 }
